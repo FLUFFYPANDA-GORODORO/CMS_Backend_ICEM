@@ -13,19 +13,19 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/news")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5173") // adjust if frontend URL changes
 public class NewsController {
 
     @Autowired
     private NewsService newsService;
 
-    // GET all
+    // ✅ GET all news
     @GetMapping
     public List<News> getAllNews() {
         return newsService.getAllNews();
     }
 
-    // GET by ID
+    // ✅ GET by ID
     @GetMapping("/{id}")
     public ResponseEntity<News> getNewsById(@PathVariable Long id) {
         Optional<News> news = newsService.getNewsById(id);
@@ -33,7 +33,7 @@ public class NewsController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // POST - Create new news
+    // ✅ POST - Create news
     @PostMapping("/upload")
     public ResponseEntity<News> createNews(
             @RequestParam("title") String title,
@@ -45,7 +45,7 @@ public class NewsController {
         return ResponseEntity.ok(news);
     }
 
-    // PUT - Update existing news
+    // ✅ PUT - Update news
     @PutMapping("/{id}")
     public ResponseEntity<News> updateNews(
             @PathVariable Long id,
@@ -58,7 +58,7 @@ public class NewsController {
         return ResponseEntity.ok(updatedNews);
     }
 
-    // DELETE - Delete news
+    // ✅ DELETE - Remove news and Cloudinary file
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNews(@PathVariable Long id) {
         newsService.deleteNews(id);

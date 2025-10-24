@@ -25,19 +25,48 @@ public class CloudinaryService {
                 "api_secret", apiSecret
         ));
     }
-    // Upload PDF file
+
+    // ✅ Upload PDF file
     public Map<String, String> uploadPdf(MultipartFile file) throws IOException {
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
-                ObjectUtils.asMap("resource_type", "raw")); // ✅ important for PDFs
+        String originalFileName = file.getOriginalFilename();
+        String baseName = (originalFileName != null)
+                ? originalFileName.replace(".pdf", "")
+                : "file_" + System.currentTimeMillis();
+
+        // ✅ Upload PDF to Cloudinary (Unsigned preset)
+        Map uploadResult = cloudinary.uploader().upload(
+                file.getBytes(),
+                ObjectUtils.asMap(
+                        "resource_type", "raw",            // Required for PDFs
+                        "upload_preset", "public_upload",  // Unsigned preset name
+                        "folder", "news_pdfs",             // Folder in Cloudinary
+                        "public_id", baseName,             // Clean file name
+                        "use_filename", true,
+                        "unique_filename", true
+                )
+        );
+
+        // ✅ Extract details
+        String pdfUrl = uploadResult.get("secure_url").toString();
+        String publicId = uploadResult.get("public_id").toString();
+
+        System.out.println("✅ Uploaded PDF:");
+        System.out.println("URL: " + pdfUrl);
+        System.out.println("Public ID: " + publicId);
+        System.out.println("Resource type: " + uploadResult.get("resource_type"));
 
         return Map.of(
-                "url", uploadResult.get("secure_url").toString(),
-                "publicId", uploadResult.get("public_id").toString()
+                "url", pdfUrl,
+                "publicId", publicId
         );
     }
 
+    // ✅ Delete PDF from Cloudinary
+    public void deletePdf(String publicId) throws IOException {
+        cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "raw"));
+    }
 
-    // Upload image and return both URL + public_id
+    // ✅ Generic image/file upload (optional utility)
     public Map<String, String> uploadFile(MultipartFile file) throws IOException {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(),
                 ObjectUtils.asMap("resource_type", "auto"));
@@ -47,12 +76,8 @@ public class CloudinaryService {
         );
     }
 
-    // Delete image from Cloudinary
+    // ✅ Delete any file (generic)
     public void deleteFile(String publicId) throws IOException {
         cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-    }
-
-    public void deletePdf(String publicId) throws IOException {
-        cloudinary.uploader().destroy(publicId, ObjectUtils.asMap("resource_type", "raw"));
     }
 }

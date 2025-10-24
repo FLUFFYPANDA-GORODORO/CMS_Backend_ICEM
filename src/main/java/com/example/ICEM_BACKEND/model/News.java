@@ -19,11 +19,8 @@ public class News {
     @Column(length = 2000)
     private String description;
 
-    private String pdfUrl;     // ✅ instead of image URL
-
-    private String publicId;   // ✅ Cloudinary reference
-
+    private String pdfUrl;     // ✅ Full Cloudinary URL
+    private String publicId;   // ✅ Cloudinary public reference
     private String author;
-
-    private String date;       // Optional (string or LocalDateTime)
+    private String date;       // ✅ Stored as String for flexibility
 }

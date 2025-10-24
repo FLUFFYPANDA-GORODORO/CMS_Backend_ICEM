@@ -21,17 +21,17 @@ public class NewsService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
-    // GET all news
+    // ✅ Get all news
     public List<News> getAllNews() {
         return newsRepository.findAll();
     }
 
-    // GET by ID
+    // ✅ Get single news by ID
     public Optional<News> getNewsById(Long id) {
         return newsRepository.findById(id);
     }
 
-    // POST - Create news with PDF
+    // ✅ Create new news with optional PDF
     public News createNews(String title, String description, String author, MultipartFile pdfFile) throws IOException {
         News news = new News();
         news.setTitle(title);
@@ -39,7 +39,6 @@ public class NewsService {
         news.setAuthor(author);
         news.setDate(LocalDate.now().toString());
 
-        // ✅ Upload PDF if provided
         if (pdfFile != null && !pdfFile.isEmpty()) {
             Map<String, String> uploadResult = cloudinaryService.uploadPdf(pdfFile);
             news.setPdfUrl(uploadResult.get("url"));
@@ -49,7 +48,7 @@ public class NewsService {
         return newsRepository.save(news);
     }
 
-    // PUT - Update news
+    // ✅ Update existing news
     public News updateNews(Long id, String title, String description, String author, MultipartFile pdfFile) throws IOException {
         News existingNews = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with id: " + id));
@@ -58,10 +57,10 @@ public class NewsService {
         existingNews.setDescription(description);
         existingNews.setAuthor(author);
 
-        // ✅ Update PDF if provided
+        // Update PDF if a new one is uploaded
         if (pdfFile != null && !pdfFile.isEmpty()) {
             if (existingNews.getPublicId() != null) {
-                cloudinaryService.deleteFile(existingNews.getPublicId());
+                cloudinaryService.deletePdf(existingNews.getPublicId());
             }
 
             Map<String, String> uploadResult = cloudinaryService.uploadPdf(pdfFile);
@@ -72,14 +71,14 @@ public class NewsService {
         return newsRepository.save(existingNews);
     }
 
-    // DELETE - Delete news and PDF from Cloudinary
+    // ✅ Delete news and its PDF
     public void deleteNews(Long id) {
         News news = newsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("News not found with id: " + id));
 
         try {
             if (news.getPublicId() != null) {
-                cloudinaryService.deleteFile(news.getPublicId());
+                cloudinaryService.deletePdf(news.getPublicId());
             }
         } catch (IOException e) {
             throw new RuntimeException("Error deleting PDF from Cloudinary", e);
