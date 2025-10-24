@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: icem-backend
+    env: docker
+    region: singapore   # or any other region close to you
+    plan: free
+    autoDeploy: true
+    dockerfilePath: ./Dockerfile
+
+    envVars:
+      # === Spring ===
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: PORT
+        value: 8080
+
+      # === Database (Neon) ===
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://ep-wild-truth-a11q483p-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require
+      - key: SPRING_DATASOURCE_USERNAME
+        value: neondb_owner
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: npg_nB3iLO8ruoXY
+
+      # === Cloudinary ===
+      - key: CLOUDINARY_CLOUD_NAME
+        value: dkhxnyat4
+      - key: CLOUDINARY_API_KEY
+        value: 876484229775414
+      - key: CLOUDINARY_API_SECRET
+        value: iUql2EZAqFuyK8H2Yr4dpFEUgn4
+
+      # === JWT ===
+      - key: JWT_SECRET
+        value: 3rlBNiifJpyz1fBrZ9mLsiOnA2PgrvyHVIHy5yPrIO4=
+      - key: JWT_EXPIRATION
+        value: 3600000

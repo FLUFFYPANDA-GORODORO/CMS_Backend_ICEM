@@ -1,0 +1,39 @@
+# ================================
+# Maven / Build Artifacts
+# ================================
+target/
+!target/*.jar   # Exclude everything except the final JAR
+
+# ================================
+# IDE / Editor / OS Junk
+# ================================
+*.iml
+.idea/
+.vscode/
+*.log
+*.tmp
+*.swp
+.DS_Store
+Thumbs.db
+
+# ================================
+# Git
+# ================================
+.git/
+.gitignore
+.github/
+
+# ================================
+# Environment / Secrets
+# ================================
+.env
+*.env
+application-prod.properties
+application-local.properties
+
+# ================================
+# Node or Frontend Folders (if any)
+# ================================
+node_modules/
+dist/
+build/
