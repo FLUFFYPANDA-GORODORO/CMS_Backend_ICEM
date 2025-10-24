@@ -18,7 +18,7 @@ public class CorsConfig {
                                 "http://localhost:5173",
                                 "http://localhost:5174", // ✅ Added another allowed frontend port
                                 "http://localhost:3000", // ✅ Added another allowed frontend port
-                                "https://icemcms.vercel.app/" // ✅ Added another allowed frontend port
+                                "https://icemcms.vercel.app" // ✅ Added another allowed frontend port
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
